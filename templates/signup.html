@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-form">
+        <header>
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo">
+            <h1>CREATE ACCOUNT</h1>
+            <p>Register to save your emotion history</p>
+        </header>
+        <form method="POST" action="{{ url_for('signup') }}">
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+            </div>
+            {% if error %}
+            <div class="error-message">
+                <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+            </div>
+            {% endif %}
+            <button type="submit" class="login-btn">SIGN UP</button>
+        </form>
+        <div class="links">
+            <a href="{{ url_for('index') }}" class="sign-up">
+                Already have an account? Login
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

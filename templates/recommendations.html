@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .recommendations-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .recommendations-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .recommendations-header .logo {
+        height: 80px;
+        margin-bottom: 15px;
+    }
+
+    .recommendations-header h1 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .emotion-highlight {
+        font-weight: bold;
+        color: {% if emotion == 'happy' %}#4CAF50{% elif emotion == 'sad' %}#2196F3{% elif emotion == 'angry' %}#F44336{% elif emotion == 'disgust' %}#8BC34A{% elif emotion == 'fear' %}#9C27B0{% elif emotion == 'neutral' %}#9E9E9E{% else %}#FF9800{% endif %};
+    }
+
+    .emotion-icon {
+        margin-right: 8px;
+    }
+
+    .recommendation-section {
+        margin-bottom: 30px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .section-header i {
+        font-size: 24px;
+        margin-right: 10px;
+        color: #4a6bff;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        color: #333;
+    }
+
+    .recommendation-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+    }
+
+    .recommendation-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .recommendation-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .recommendation-poster {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .recommendation-info {
+        flex-grow: 1;
+    }
+
+    .recommendation-title {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .recommendation-link {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .recommendation-link:hover .recommendation-title {
+        color: #4a6bff;
+    }
+
+    .language-tag {
+        display: inline-block;
+        background-color: #e0e7ff;
+        color: #4a6bff;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .no-items {
+        color: #666;
+        font-style: italic;
+        padding: 15px;
+        text-align: center;
+        grid-column: 1 / -1;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #4a6bff;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+    .action-btn:hover {
+        background-color: #3a5bef;
+    }
+
+    .action-btn i {
+        margin-right: 8px;
+    }
+
+    .logout-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f44336;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+    .logout-btn:hover {
+        background-color: #d32f2f;
+    }
+
+    .logout-btn i {
+        margin-right: 8px;
+    }
+
+    @media (max-width: 600px) {
+        .recommendation-list {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-btn, .logout-btn {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="recommendations-container">
+    <div class="recommendations-header">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo">
+        <h1>YOUR RECOMMENDATIONS</h1>
+        <p>Based on your <span class="emotion-highlight">
+            <i class="fas fa-{% if emotion == 'happy' %}smile{% elif emotion == 'sad' %}sad-tear{% elif emotion == 'angry' %}angry{% elif emotion == 'disgust' %}grimace{% elif emotion == 'fear' %}surprise{% elif emotion == 'neutral' %}meh{% else %}surprise{% endif %} emotion-icon"></i>
+            {{ emotion }}
+        </span> mood</p>
+    </div>
+    
+    <div class="recommendation-section">
+        <div class="section-header">
+            <i class="fa-solid fa-film"></i>
+            <h2>Movies to Watch</h2>
+        </div>
+        <div class="recommendation-list">
+            {% for movie in recommendations.movies %}
+            <a href="{{ movie.link }}" target="_blank" rel="noopener noreferrer" class="recommendation-link">
+                <div class="recommendation-item">
+                    <img src="{{ movie.image_url }}" 
+                         alt="{{ movie.title }}" class="recommendation-poster"
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/60x80?text=No+Poster'">
+                    <div class="recommendation-info">
+                        <div class="recommendation-title">{{ movie.title }}</div>
+                        <span class="language-tag">{{ movie.language if movie.language else 'english' }}</span>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="no-items">No movie recommendations available</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="recommendation-section">
+        <div class="section-header">
+            <i class="fa-solid fa-music"></i>
+            <h2>Songs to Listen</h2>
+        </div>
+        <div class="recommendation-list">
+            {% for song in recommendations.music %}
+            <a href="{{ song.link }}" target="_blank" rel="noopener noreferrer" class="recommendation-link">
+                <div class="recommendation-item">
+                    <img src="{{ song.image_url }}" 
+                         alt="{{ song.title }}" class="recommendation-poster"
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/60x80?text=No+Cover'">
+                    <div class="recommendation-info">
+                        <div class="recommendation-title">{{ song.title }}</div>
+                        <span class="language-tag">{{ song.language if song.language else 'english' }}</span>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="no-items">No music recommendations available</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="recommendation-section">
+        <div class="section-header">
+            <i class="fa-solid fa-book"></i>
+            <h2>Books to Read</h2>
+        </div>
+        <div class="recommendation-list">
+            {% for book in recommendations.books %}
+            <a href="{{ book.link }}" target="_blank" rel="noopener noreferrer" class="recommendation-link">
+                <div class="recommendation-item">
+                    <img src="{{ book.image_url }}" 
+                         alt="{{ book.title }}" class="recommendation-poster"
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/60x80?text=No+Cover'">
+                    <div class="recommendation-info">
+                        <div class="recommendation-title">{{ book.title }}</div>
+                        <span class="language-tag">{{ book.language if book.language else 'english' }}</span>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="no-items">No book recommendations available</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="{{ url_for('language_selection') }}" class="action-btn">
+            <i class="fa-solid fa-language"></i> CHANGE LANGUAGES
+        </a>
+        <a href="{{ url_for('camera') }}" class="action-btn">
+            <i class="fa-solid fa-redo"></i> DETECT AGAIN
+        </a>
+        {% if session.get('logged_in') %}
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <i class="fa-solid fa-sign-out-alt"></i> LOGOUT
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Add click tracking if needed
+    document.querySelectorAll('.recommendation-link').forEach(link => {
+        link.addEventListener('click', function() {
+            // You could add analytics tracking here
+            console.log('Clicked recommendation:', this.href);
+        });
+    });
+</script>
+{% endblock %}

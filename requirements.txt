@@ -1,0 +1,9 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Werkzeug==3.0.1
+opencv-python-headless==4.9.0.80  # Use headless version for Docker
+tensorflow==2.16.1                # Or tensorflow-cpu if GPU isn't needed
+gdown==4.7.3                      # For Google Drive downloads
+psycopg2-binary==2.9.9            # For PostgreSQL (replace sqlite)
+numpy==1.26.4                     # Required for TensorFlow/OpenCV
+gunicorn==21.2.0                  # Production WSGI server

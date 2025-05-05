@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="camera-container">
+    <div class="camera-header">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="logo">
+        <h1>EMOTION DETECTION</h1>
+        <p>Allow camera access to begin analysis</p>
+    </div>
+    
+    <div class="camera-box">
+        <div class="video-wrapper">
+            <video id="videoPreview" autoplay muted></video>
+            <canvas id="canvasCapture"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button id="captureBtn" class="action-btn">
+                <i class="fa-solid fa-camera"></i> DETECT EMOTION
+            </button>
+            <div id="loadingIndicator" class="hidden">
+                <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <span>Analyzing your emotion...</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="emotionResult" class="result-box hidden">
+        <h2>You seem <span id="detectedEmotion"></span>!</h2>
+        <p>Confidence: <span id="confidenceValue"></span>%</p>
+        <a href="{{ url_for('recommendations') }}" class="action-btn">
+            <i class="fa-solid fa-star"></i> GET RECOMMENDATIONS
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+{% endblock %}
