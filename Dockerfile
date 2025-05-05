@@ -20,11 +20,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the app
 COPY . .
 
-# Download model (if not pre-downloaded)
-# Uncomment if you want Docker to download it:
-# RUN apt-get install -y wget && \
-#     wget -O /app/static/models/best_model.h5 "https://drive.google.com/uc?id=10gLaaT19nNTxgJp7RrzRZLP01CkNusEG"
-
+# Download model if not included in repo
+RUN mkdir -p static/models && \
+    wget -O static/models/best_model.h5 "https://drive.google.com/uc?id=10gLaaT19nNTxgJp7RrzRZLP01CkNusEG"
+    
 # Set environment variables (e.g., for production DB)
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
