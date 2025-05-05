@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: Emotain
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: postgresql://emotain_db_user:YIv3zZoNnqyXhQJRmRtVSO2PU9E0UXHe@dpg-d0b5qb6uk2gs73ce0dmg-a/emotain_db
+        fromDatabase:
+          name: emotion_db
+          property: connectionString
+      - key: FLASK_ENV
+        value: production
